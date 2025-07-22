@@ -187,13 +187,11 @@ impl BlockRazor {
         let start = Instant::now();
 
         let client = Client::new();
-        let url = format!("{}{}", self.endpoint.submit_endpoint, self.auth_key);
+        let url = format!("{}", self.endpoint.submit_endpoint);
 
         let payload = json!({
-            "transaction": {
-                "content": encoded_tx,
-                "mode": "fast"
-            },
+            "transaction": encoded_tx,
+            "mode": "fast"
         });
 
         let response = client
