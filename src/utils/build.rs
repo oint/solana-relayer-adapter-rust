@@ -19,6 +19,8 @@ pub fn build_v0_bs64(
         ixs.insert(0, nonce_instruction);
     }
 
+    let base64 = base64_simd::STANDARD;
+
     let message: Message = Message::try_compile(fee_payer, &ixs, &[], recent_blockhash)
         .expect("Failed to compile message");
     let versioned_message = VersionedMessage::V0(message);
@@ -26,7 +28,8 @@ pub fn build_v0_bs64(
         .expect("Failed to create transaction");
 
     let serialized_tx = bincode::serialize(&txn).expect("Failed to serialize transaction");
-    bs64::encode(&serialized_tx)
+    let base64_encoded = base64.encode_to_string(&serialized_tx);
+    base64_encoded
 }
 
 pub fn simulate(
