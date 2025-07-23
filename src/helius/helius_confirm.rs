@@ -16,7 +16,6 @@ use crate::{
 pub struct Helius {
     pub client: Client,
     pub endpoint: HeliusEndpoint,
-    pub auth_key: String,
 }
 
 impl TransactionBuilder for Helius {
@@ -52,7 +51,7 @@ impl TransactionBuilder for Helius {
 }
 
 impl Helius {
-    pub async fn new_with_region(region: HeliusRegionsType, auth_key: String) -> Self {
+    pub async fn new_with_region(region: HeliusRegionsType) -> Self {
         let endpoint = HELIUS_REGIONS
             .iter()
             .find(|r| r.relayer == region)
@@ -76,11 +75,10 @@ impl Helius {
                 .build()
                 .expect("Failed to build Jito HTTP client"),
             endpoint,
-            auth_key,
         }
     }
 
-    pub async fn new_auto(auth_key: String) -> Self {
+    pub async fn new_auto() -> Self {
         let regions: Vec<(String, String)> = HELIUS_REGIONS
             .iter()
             .map(|r| (r.relayer_name.to_string(), r.ping_endpoint.to_string()))
@@ -116,7 +114,6 @@ impl Helius {
                 .build()
                 .expect("Failed to build HTTP client"),
             endpoint,
-            auth_key,
         }
     }
 
@@ -200,7 +197,6 @@ impl Helius {
         let response = client
             .post(url)
             .header("Content-Type", "application/json")
-            .header("apikey", &self.auth_key)
             .json(&payload)
             .send()
             .await?;
